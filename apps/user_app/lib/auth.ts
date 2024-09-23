@@ -2,9 +2,6 @@
 import  CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@repo/db/client";
 import bcrypt from "bcrypt"
-import { Session } from "next-auth";
-import { JWT } from "next-auth/jwt";
-import { User } from "next-auth";
 import GoogleProvider from "next-auth/providers/google"
 type obj = {[key:string]:string}
 export const  Credentail_option= {
