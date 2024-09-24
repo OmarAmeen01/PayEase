@@ -1,5 +1,5 @@
-import { Button } from "./button";
 
+import  Button from "./button";
 interface AppbarProps {
     user?: {
         name?: string | null;
@@ -9,11 +9,11 @@ interface AppbarProps {
     onSignout: any
 }
 
-export const Appbar = ({
+export default function Topbar ({
     user,
     onSignin,
     onSignout
-}: AppbarProps) => {
+}: AppbarProps) {
     return <div className="flex justify-between border-b px-4">
         <div className="text-lg flex flex-col justify-center">
             PayTM

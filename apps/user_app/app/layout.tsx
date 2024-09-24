@@ -4,6 +4,7 @@ import "./globals.css";
 import store from "@repo/store/store";
 import { Provider } from "react-redux";
 import ProviderCtx from "./provider";
+import { AppbarClient } from "./appBarUserClient";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -26,8 +27,8 @@ export default function RootLayout({
   return (
     <html lang="en">
   <ProviderCtx>
-
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+<AppbarClient/>
         {children}
       </body>
   </ProviderCtx>

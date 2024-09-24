@@ -3,7 +3,7 @@ import  CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@repo/db/client";
 import bcrypt from "bcrypt"
 import GoogleProvider from "next-auth/providers/google"
-type obj = {[key:string]:string}
+
 export const  Credentail_option= {
     providers:[
         CredentialsProvider({
@@ -53,7 +53,7 @@ export const  Credentail_option= {
              return {
               id:newUser?.id,
               email:newUser?.email,
-              name:newUser?.name
+              number:newUser?.name
              }
             }else{
               return null
