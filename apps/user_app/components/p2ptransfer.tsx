@@ -33,7 +33,7 @@ export default function ({balance }:{balance:number,locked:number}){
 }
  }
 
-   return  <div id="transfer section" className=" w-[35rem] bg-white p-12 rounded-lg border-black border flex flex-col gap-4 ">
+   return  <div id="transfer section" className=" w-[35rem] bg-white p-12 rounded-lg shadow-lg flex flex-col gap-4 ">
     {error.isError&&<div className="text-sm rounded-lg font-semibold text-black p-2 bg-[rgba(255,85,85,0.5)]">{error.error}</div>}
     <TextInput label="Phone Number" placeholder="Phone Number" type="number"  onChange={(e)=>{
      setNumber(e.target.value)
