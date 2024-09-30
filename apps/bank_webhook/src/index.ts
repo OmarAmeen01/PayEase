@@ -18,7 +18,7 @@ app.post("/hdfcWebhook", async (req, res) => {
     try {
         // not here we are sending two request here together to db so given since this involves payment when both models are updated then we return status 200 otherwise status 400
         await prisma.$transaction([
-            prisma.balance.updateMany({
+            prisma.balance.update({
                 where: {
                     userId: Number(paymentInformation.userId)
                 },
@@ -29,7 +29,7 @@ app.post("/hdfcWebhook", async (req, res) => {
                     }
                 }
             }),
-            prisma.onRampTransaction.updateMany({
+            prisma.onRampTransaction.update({
                 where: {
                     token: paymentInformation.token
                 }, 
@@ -51,4 +51,6 @@ app.post("/hdfcWebhook", async (req, res) => {
 
 })
 
-app.listen(3003);
+app.listen(3003,()=>{
+    console.log("Running on port http:localhost:3003")
+});

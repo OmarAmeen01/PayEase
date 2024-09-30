@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth";
-import { Credentail_option } from "../../../../lib/auth";
 import { NextResponse } from "next/server";
+import { authOptions } from "../../../../lib/auth";
 
 async function GET(){
-    const session = await getServerSession(Credentail_option)
+    const session = await getServerSession(authOptions)
     if(session){
      return   NextResponse.json({
           user:session.user

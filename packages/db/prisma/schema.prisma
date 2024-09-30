@@ -15,9 +15,7 @@ model User {
   password          String
   OnRampTransaction OnRampTransaction[]
   Balance           Balance[]
-  auth_type   AuthType 
 }
-
 
 model Merchant {
   id        Int      @id @default(autoincrement())
@@ -25,15 +23,17 @@ model Merchant {
   name      String?
   auth_type AuthType
 }
+
 model OnRampTransaction {
   id        Int          @id @default(autoincrement())
   status    OnRampStatus
   token     String       @unique
   provider  String
   amount    Int
+  method    Method
   startTime DateTime
   userId    Int
-  user     User @relation(fields: [userId], references: [id],onDelete: Cascade,onUpdate: Cascade)
+  user      User         @relation(fields: [userId], references: [id])
 }
 
 model Balance {
@@ -41,19 +41,20 @@ model Balance {
   userId Int  @unique
   amount Int
   locked Int
-  user   User @relation(fields: [userId], references: [id],onDelete: Cascade,onUpdate: Cascade)
+  user   User @relation(fields: [userId], references: [id])
 }
 
-
+enum AuthType {
+  Google
+  Github
+}
 
 enum OnRampStatus {
   Success
   Failure
   Processing
 }
-
-enum AuthType {
-  Credetials
-  Google
-  Github
+enum Method {
+  Recieved
+  Sent
 }

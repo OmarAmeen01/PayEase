@@ -1,8 +1,11 @@
 -- CreateEnum
+CREATE TYPE "AuthType" AS ENUM ('Google', 'Github');
+
+-- CreateEnum
 CREATE TYPE "OnRampStatus" AS ENUM ('Success', 'Failure', 'Processing');
 
 -- CreateEnum
-CREATE TYPE "AuthType" AS ENUM ('Credetials', 'Google', 'Github');
+CREATE TYPE "Method" AS ENUM ('Recieved', 'Sent');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -11,7 +14,6 @@ CREATE TABLE "User" (
     "name" TEXT,
     "number" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "auth_type" "AuthType" NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -33,6 +35,7 @@ CREATE TABLE "OnRampTransaction" (
     "token" TEXT NOT NULL,
     "provider" TEXT NOT NULL,
     "amount" INTEGER NOT NULL,
+    "method" "Method" NOT NULL,
     "startTime" TIMESTAMP(3) NOT NULL,
     "userId" INTEGER NOT NULL,
 
@@ -65,7 +68,7 @@ CREATE UNIQUE INDEX "OnRampTransaction_token_key" ON "OnRampTransaction"("token"
 CREATE UNIQUE INDEX "Balance_userId_key" ON "Balance"("userId");
 
 -- AddForeignKey
-ALTER TABLE "OnRampTransaction" ADD CONSTRAINT "OnRampTransaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "OnRampTransaction" ADD CONSTRAINT "OnRampTransaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Balance" ADD CONSTRAINT "Balance_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Balance" ADD CONSTRAINT "Balance_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

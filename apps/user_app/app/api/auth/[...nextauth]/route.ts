@@ -1,7 +1,6 @@
-import NextAuth from "next-auth/next";
-import { Credentail_option
-} from "../../../../lib/auth"
+import NextAuth from "next-auth"
+import { authOptions } from "../../../../lib/auth"
 
-const handler = NextAuth(Credentail_option)
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }

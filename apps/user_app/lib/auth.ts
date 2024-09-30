@@ -1,92 +1,66 @@
-
-import  CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@repo/db/client";
+import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
-import GoogleProvider from "next-auth/providers/google"
 
-export const  Credentail_option= {
-    providers:[
-        CredentialsProvider({
-            name:"Phone",
-            credentials:{
-                phone:{label:"Phone",type:"number", placeholder:"Enter your phone number"},
-                password:{label:"Password",type:"password", placeholder:"Enter your password"}
-        
-        },
-            async authorize (credentials){
-               if(typeof credentials!=="undefined"){
-                const number = credentials.phone
-                const password = credentials.password
-      
-                 const saltRounds= 10
-            const hash =   bcrypt.hashSync (password,saltRounds,)
-  
-            try {
-              const user =await prisma.user.findFirst({
-                where:{number:number}
-              })
-             
-              if(user){
-                   
-                const isUser= bcrypt.compareSync(password,user.password)
-
-                if(isUser){
-                      return {id:user?.id,
-                         email:user?.email,
-                         number:user?.name
-                      }
-                }else{
-                  return null
+export const authOptions = {
+    providers: [
+      CredentialsProvider({
+          name: 'Credentials',
+          credentials: {
+            phone: { label: "Phone number", type: "number", placeholder: "1231231231", required: true },
+            password: { label: "Password", type: "password", required: true }
+          },
+          // TODO: User credentials type from next-aut
+          async authorize(credentials: any) {
+            // Do zod validation, OTP validation here
+            const hashedPassword = bcrypt.hashSync(credentials.password, 10);
+            const existingUser = await prisma.user.findFirst({
+                where: {
+                    number: credentials.phone
                 }
+            });
 
-              }
-
-            const newUser = await prisma.user.create({
-              data:{number:number,
-                password:hash,
-                auth_type:"Credetials"
-              }
-              
-            })
-
-            if(newUser){
-             return {
-              id:newUser?.id,
-              email:newUser?.email,
-              number:newUser?.name
-             }
-            }else{
-              return null
+            if (existingUser) {
+                const passwordValidation =  bcrypt.compareSync(credentials.password, existingUser.password);
+                if (passwordValidation) {
+                    return {
+                        id: existingUser.id.toString(),
+                        name: existingUser.name,
+                        email: existingUser.number
+                    }
+                }
+                return null;
             }
-            } catch (error) {
-              console.log(error)
-              return null
-            }
-          }else{
-            return null
-          }
-            },
+
+            try {
+                const user = await prisma.user.create({
+                    data: {
+                        number: credentials.phone,
+                        password: hashedPassword
+                    }
+                });
             
-        }),
+                return {
+                    id: user.id.toString(),
+                    name: user.name,
+                    email: user.number
+                }
+            } catch(e) {
+                console.error(e);
+            }
 
-        GoogleProvider({
-
-          clientId:process.env.GOOGLE_CLIENT_ID as string,
-          clientSecret:process.env.GOOGLE_CLIENT_SECRET as string,
+            return null
+          },
         })
-        
     ],
-    secret:process.env.JWT_SECRET,
- 
-    callbacks:{
-      
-    session({session,token,user}:any) {
-  
-  if(typeof session.user !=="undefined"){
-    session.user.id =token.sub
-    return session
-  }
-     
-    },
+    secret: process.env.JWT_SECRET || "secret",
+    callbacks: {
+        // TODO: can u fix the type here? Using any is bad
+        async session({ token, session }: any) {
+            session.user.id = token.sub
+
+            return session
+        }
     }
-}
+  }
+  
